@@ -1,342 +1,125 @@
-🚨 ZeroHour
-AI-Powered Real-Time Crisis Intelligence Platform
-ZeroHour is a real-time crisis intelligence platform that detects and analyzes emergency events from social media signals using AI, NLP, and real-time analytics.
+# 🚨 ZeroHour — AI-Powered Real-Time Crisis Intelligence Platform
+
+ZeroHour is a real-time crisis intelligence platform that detects and analyzes emergency events from social media signals using AI, NLP, and real-time analytics. 
 
 The system ingests social data, classifies severity using LLM + NLP models, verifies information with authoritative sources, clusters signals into incidents, and visualizes everything on a live intelligence dashboard.
 
-🌍 Why ZeroHour
-
-During emergencies, social media signals appear before official reports.
-
-ZeroHour transforms noisy social signals into:
-
-• Early crisis detection
-• Real-time monitoring
-• Incident intelligence
-• Crisis escalation prediction
-
-This system helps analysts, journalists, and emergency response teams detect developing crises faster.
-
-🧠 Key Features
-🚨 Real-Time Crisis Detection
-Monitors social media signals continuously
-Detects emerging incidents
-Classifies crisis severity
-
-Severity levels:
-
-CRITICAL
-HIGH
-MEDIUM
-LOW
-NEUTRAL
-🧠 AI Analysis Pipeline
-
-ZeroHour uses multiple AI models to analyze signals.
-
-Task	Model
-Sentiment Analysis	VADER
-Crisis Classification	Phi-3
-Topic Detection	BERTopic
-Entity Recognition	spaCy
-Similarity Detection	Sentence Transformers
-🔎 Incident Clustering
-
-Instead of analyzing tweets individually, ZeroHour groups related signals into incidents.
-
-Example:
-
-Tweet 1: Explosion heard near station
-Tweet 2: Smoke near railway station
-Tweet 3: Loud blast downtown
-
-→ Clustered into
-
-Incident #104
-Type: Explosion
-Location: Downtown Station
-Signals: 42
-Severity: CRITICAL
-
-Clustering methods:
-
-TF-IDF similarity
-Sentence embeddings
-Keyword grouping
-🗺 Real-Time Crisis Map
-
-ZeroHour visualizes incidents geographically.
-
-Features:
-
-• Incident markers
-• Geo-tagged tweets
-• Crisis heatmaps
-• Regional activity clusters
-
-Built using:
-
-Mapbox
-Folium
-Streamlit Map components
-📈 Event Timeline Analytics
-
-Track how a crisis evolves.
-
-Visualizations:
-
-Tweet Volume vs Time
-Sentiment vs Time
-Severity Escalation
-
-Detects:
-
-sudden spikes
-emotional surges
-incident acceleration
-🧾 Named Entity Recognition (NER)
-
-Extracts structured entities from tweets.
-
-Example:
-
-Explosion near Delhi railway station
-
-Extracted entities:
-
-Location → Delhi Railway Station
-Event → Explosion
-Organization → Railway
-
-Used for:
-
-incident clustering
-geo-mapping
-authority verification
-🔍 Authority Verification Engine
-
-ZeroHour checks claims against trusted sources.
-
-Example query:
-
-explosion downtown site:reuters.com OR site:apnews.com
-
-Process:
-
-Search authoritative domains
-Scrape results
-Verify keyword presence
-Mark signal as verified
-
-Output:
-
-authority = TRUE
-⚠️ Misinformation Detection
-
-Signals are categorized as:
-
-Verified
-Unverified
-Likely Misinformation
-
-Factors used:
-
-source credibility
-authority confirmation
-linguistic patterns
-🚨 Crisis Prediction Engine
-
-Predicts whether incidents will escalate.
-
-Model inputs:
-
-tweet velocity
-sentiment drop
-keyword intensity
-source credibility
-
-Example output:
-
-Escalation Probability: 82%
-🔔 Automated Alert System
-
-ZeroHour can notify responders automatically.
-
-Trigger example:
-
-severity = CRITICAL
-tweet volume > 50
-sentiment < -0.7
-
-Alert channels:
-
-• Email
-• Slack
-• Telegram
-• Webhooks
-
-Example alert:
-
-🚨 CRITICAL EVENT DETECTED
-Location: Bangalore
-Signals: 120
-Sentiment: -0.83
-📊 Interactive Intelligence Dashboard
-
-The dashboard built with Streamlit shows:
-
-KPI Metrics
-
-• Total Signals
-• Active Incidents
-• Critical Alerts
-• Verified Signals
-• Average Sentiment
-
-Visualizations
-
-• Emotion Velocity Chart
-• Incident Map
-• Severity Distribution
-• Crisis Timeline
-• Activity Heatmap
-
-Live Signal Feed
-
-Each signal card shows:
-
-severity label
-tweet content
-username
-timestamp
-sentiment score
-authority status
-🌐 Multi-Source Data Ingestion
-
-ZeroHour collects signals from multiple platforms.
-
-Sources:
-
-• Twitter
-• Reddit
-• Telegram
-• RSS News feeds
-• Government alerts
-• Weather APIs
-
-🧱 System Architecture
-Social Media Sources
-        │
-        ▼
-Data Ingestion Layer
-(snscrape / APIs)
-        │
-        ▼
-Preprocessing Pipeline
-        │
-        ▼
-AI Analysis Engine
-(VADER + LLM + NER)
-        │
-        ▼
-Incident Clustering
-        │
-        ▼
-Authority Verification
-        │
-        ▼
-Database Layer
-(SQLite / PostgreSQL)
-        │
-        ▼
-FastAPI Backend
-        │
-        ▼
-Streamlit Intelligence Dashboard
-
-
-🗄 Database Schema
-Tweets Table
-Column	Description
-tweet_id	unique id
-content	tweet text
-created_at	timestamp
-sentiment	VADER score
-severity	classification
-authority	verified flag
-location	geo tag
-Incidents Table
-Column	Description
-incident_id	id
-severity	severity
-location	event location
-tweet_count	number of signals
-escalation_probability	ML prediction
-Alerts Table
-
-Stores alert history.
-
-🔌 REST API
-
-Backend powered by FastAPI.
-
-Key endpoints:
-
-GET /api/tweets
-POST /api/tweets
-GET /api/incidents
-POST /api/incidents
-GET /api/stats
-GET /api/emotion-velocity
-POST /api/alerts
-
-Interactive API docs:
-
-http://localhost:8000/docs
-⚡ Tech Stack
-Layer	Technology
-Backend API	FastAPI
-Dashboard	Streamlit
-AI Models	Phi-3
-NLP	spaCy
-Sentiment	VADER
-Topic Modeling	BERTopic
-Database	PostgreSQL
-Scraping	snscrape
-Data Processing	Pandas
-🚀 Future Roadmap
-
-Planned features:
-
-crisis knowledge graph
-satellite imagery integration
-disaster simulation
-edge AI monitoring
-global crisis detection network
-💡 Use Cases
-
-ZeroHour can be used by:
-
-• disaster response teams
-• government agencies
-• journalists
-• crisis monitoring centers
-• intelligence analysts
-
-📜 License
-
-MIT License
-
-🤝 Contributing
-
-Contributions are welcome.
-
-Steps:
-
-1 Fork the repository
-2 Create feature branch
-3 Commit changes
-4 Submit pull request
-👨‍💻 Author
-
-ZeroHour — AI Crisis Intelligence System
+🌍 **Why ZeroHour?**
+During emergencies, social media signals appear before official reports. ZeroHour transforms noisy social signals into:
+- **Early crisis detection**
+- **Real-Time monitoring**
+- **Incident intelligence**
+- **Crisis escalation prediction**
+
+---
+
+## 🧩 Key Features
+
+### 🚨 Real-Time Crisis Detection
+- **Continuous Monitoring**: Scans social media signals in real-time.
+- **Incident Detection**: Identifies emerging crises before they go viral.
+- **Severity Classification**: Labels events as `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, or `NEUTRAL`.
+
+### 🔥 Incident Clustering (NEW)
+Groups individual signals into cohesive incidents to reduce noise.
+- **Example**: 20 tweets about a "smoke near station" → **Incident #104: Fire at Central Station**.
+- **Methods**: TF-IDF similarity, Sentence Embeddings (MiniLM), and Keyword Grouping.
+
+### 📍 Live Crisis Map (NEW)
+Visualizes incidents geographically for better situational awareness.
+- **Incident Markers**: Clickable markers showing event details.
+- **Heatmaps**: Regional activity clusters indicating crisis intensity.
+- **Tools**: Built with Mapbox, Folium, and Streamlit components.
+
+### 🧠 Advanced AI Analysis Pipeline
+ZeroHour uses a multi-model approach for deep intelligence:
+| Task | Model |
+| --- | --- |
+| **Sentiment Analysis** | VADER (Rule-based, instant) |
+| **Crisis Classification** | Phi-3 (Context-aware LLM) |
+| **Topic Detection** | BERTopic |
+| **Entity Extraction (NER)** | spaCy |
+
+### 🔍 Authority Verification & Misinformation Detection
+- **Authority Engine**: Checks claims against trusted sources (Reuters, AP, Police.gov).
+- **Misinformation Detection**: Categorizes signals as *Verified*, *Unverified*, or *Likely Misinformation* based on source credibility and linguistic patterns.
+
+### 🚨 Crisis Prediction & Early Warning
+- **Escalation Model**: Predicts the probability of an incident escalating based on tweet velocity, sentiment drop, and keyword intensity.
+- **Emotion Surge Detection**: Automatically alerts responders when sudden negative emotional spikes are detected.
+
+---
+
+## 🔌 REST API (Powered by FastAPI)
+
+ZeroHour includes a robust backend for programmatic access.
+- **Interactive Docs**: Available at `http://localhost:8000/docs`
+- **Key Endpoints**:
+  - `GET /api/tweets` - Retrieve all ingested signals.
+  - `GET /api/incidents` - Get clustered incidents.
+  - `GET /api/stats` - Fetch real-time dashboard KPIs.
+  - `POST /api/alerts` - Configure and trigger custom alerts.
+
+---
+
+## 📈 Dashboard Features (Streamlit)
+
+- **KPI Metrics**: Total Signals, Active Incidents, Critical Alerts, Verified Signals.
+- **Emotion Velocity Chart**: Real-time visualization of sentiment trends.
+- **Incident Explorer**: Drill down into specific events to see timelines, news links, and maps.
+- **Smart Search**: Filter by location, keyword, time, or severity.
+
+---
+
+## 🚀 Roadmap: Best 8 Features (Priority)
+
+These are currently being implemented to make ZeroHour a world-class platform:
+1.  **Live Crisis Map**: Interactive geospatial visualization of events.
+2.  **Incident Clustering**: Automatic grouping of related signals.
+3.  **Alert System**: Real-time notifications via Email/Telegram/Slack.
+4.  **NER Location Extraction**: Pinpointing exact locations from tweet text.
+5.  **Topic Classification**: Identifying specific disaster types (Flood, Explosion, etc.).
+6.  **Event Timeline**: Tracking the evolution of a crisis over time.
+7.  **Misinformation Detection**: Ranking signals by credibility.
+8.  **Multi-Source Ingestion**: Adding Reddit, Telegram, and RSS feeds.
+
+---
+
+## 🗄️ Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| **Backend API** | FastAPI |
+| **Dashboard** | Streamlit |
+| **AI Models** | Phi-3-mini (LLM), VADER (Sentiment) |
+| **NLP** | spaCy, BERTopic |
+| **Database** | SQLite (PostgreSQL for production) |
+| **Scraping** | snscrape, BeautifulSoup |
+| **Geo** | Mapbox, Folium |
+
+---
+
+## 📦 Installation & Setup
+
+1. **Clone & Install**:
+   ```bash
+   git clone https://github.com/yourname/zerohour.git
+   cd zerohour
+   pip install -r requirements.txt
+   ```
+2. **Setup Ollama** (Optional but recommended):
+   - Install from [ollama.com](https://ollama.com)
+   - Run `ollama pull phi3:mini`
+3. **Launch**:
+   ```bash
+   # Start API
+   uvicorn backend.main:app --reload
+   
+   # Start Dashboard
+   streamlit run frontend/dashboard.py
+   ```
+
+---
+
+## 📜 License
+MIT License. Created by ZeroHour Team.
