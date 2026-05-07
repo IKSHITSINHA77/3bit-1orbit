@@ -1,10 +1,10 @@
-# 🚨 ZeroHour — Real-Time Crisis Intelligence Dashboard
+# 🚨 ZeroHour — AI-Powered Real-Time Crisis Intelligence Platform
 
-ZeroHour ingests social media signals, classifies them by severity using a local LLM (Phi-3-mini via Ollama) with VADER as an instant fallback, verifies claims against authoritative sources, and surfaces everything in a live Streamlit dashboard.
+ZeroHour is a real-time crisis intelligence platform that detects and analyzes emergency events from social media signals using AI, NLP, and real-time analytics. 
 
----
-## 📁 Project Structure
+The system ingests social data, classifies severity using LLM + NLP models, verifies information with authoritative sources, clusters signals into incidents, and visualizes everything on a live intelligence dashboard.
 
+<<<<<<< HEAD
 ```
 zerohour/
 ├── backend/
@@ -20,41 +20,51 @@ zerohour/
 ├── requirements.txt
 └── README.md
 ```
+=======
+🌍 **Why ZeroHour?**
+During emergencies, social media signals appear before official reports. ZeroHour transforms noisy social signals into:
+- **Early crisis detection**
+- **Real-Time monitoring**
+- **Incident intelligence**
+- **Crisis escalation prediction**
+>>>>>>> b7bb72278f226c219e4c599dfcd129d31a764c4e
 
 ---
 
-## ⚡ Quick Start
+## 🧩 Key Features
 
-### 1. Clone & install dependencies
+### 🚨 Real-Time Crisis Detection
+- **Continuous Monitoring**: Scans social media signals in real-time.
+- **Incident Detection**: Identifies emerging crises before they go viral.
+- **Severity Classification**: Labels events as `CRITICAL`, `HIGH`, `MEDIUM`, `LOW`, or `NEUTRAL`.
 
-```bash
-git clone https://github.com/yourname/zerohour.git
-cd zerohour
-pip install -r requirements.txt
-```
+### 🔥 Incident Clustering (NEW)
+Groups individual signals into cohesive incidents to reduce noise.
+- **Example**: 20 tweets about a "smoke near station" → **Incident #104: Fire at Central Station**.
+- **Methods**: TF-IDF similarity, Sentence Embeddings (MiniLM), and Keyword Grouping.
 
-### 2. (Optional) Set up Ollama for LLM analysis
+### 📍 Live Crisis Map (NEW)
+Visualizes incidents geographically for better situational awareness.
+- **Incident Markers**: Clickable markers showing event details.
+- **Heatmaps**: Regional activity clusters indicating crisis intensity.
+- **Tools**: Built with Mapbox, Folium, and Streamlit components.
 
-```bash
-# Install Ollama: https://ollama.com
-curl -fsSL https://ollama.com/install.sh | sh
+### 🧠 Advanced AI Analysis Pipeline
+ZeroHour uses a multi-model approach for deep intelligence:
+| Task | Model |
+| --- | --- |
+| **Sentiment Analysis** | VADER (Rule-based, instant) |
+| **Crisis Classification** | Phi-3 (Context-aware LLM) |
+| **Topic Detection** | BERTopic |
+| **Entity Extraction (NER)** | spaCy |
 
-# Pull the model (~2.5 GB)
-ollama pull phi3:mini
+### 🔍 Authority Verification & Misinformation Detection
+- **Authority Engine**: Checks claims against trusted sources (Reuters, AP, Police.gov).
+- **Misinformation Detection**: Categorizes signals as *Verified*, *Unverified*, or *Likely Misinformation* based on source credibility and linguistic patterns.
 
-# Start the server
-ollama serve
-```
-
-> **Without Ollama**, ZeroHour automatically falls back to VADER sentiment analysis — the dashboard still works perfectly.
-
-### 3. Launch the dashboard
-
-```bash
-streamlit run frontend/dashboard.py
-```
-
-Open **http://localhost:8501** in your browser.
+### 🚨 Crisis Prediction & Early Warning
+- **Escalation Model**: Predicts the probability of an incident escalating based on tweet velocity, sentiment drop, and keyword intensity.
+- **Emotion Surge Detection**: Automatically alerts responders when sudden negative emotional spikes are detected.
 
 ### 4. (Optional) Start the REST API server
 
@@ -66,8 +76,9 @@ The API will be available at **http://localhost:8000** with interactive docs at 
 
 ---
 
-## 🧩 Tech Stack
+## 🔌 REST API (Powered by FastAPI)
 
+<<<<<<< HEAD
 | Category | Tool | Why |
 |---|---|---|
 | 🚀 LLM Runtime | **Ollama** | Single install, excellent DX, no compilation |
@@ -80,41 +91,28 @@ The API will be available at **http://localhost:8000** with interactive docs at 
 | 🔍 Web Scraping | **BeautifulSoup + googlesearch-python** | Authority verification without API keys |
 | 📡 Data Ingestion | **snscrape** | Twitter scraping without API keys |
 | 🐍 Language | **Python 3.9+** | Universal compatibility across the whole stack |
+=======
+ZeroHour includes a robust backend for programmatic access.
+- **Interactive Docs**: Available at `http://localhost:8000/docs`
+- **Key Endpoints**:
+  - `GET /api/tweets` - Retrieve all ingested signals.
+  - `GET /api/incidents` - Get clustered incidents.
+  - `GET /api/stats` - Fetch real-time dashboard KPIs.
+  - `POST /api/alerts` - Configure and trigger custom alerts.
+>>>>>>> b7bb72278f226c219e4c599dfcd129d31a764c4e
 
 ---
 
-## 🎮 Dashboard Features
+## 📈 Dashboard Features (Streamlit)
 
-### 📊 KPI Row
-- **Total Signals** — all tweets ingested
-- **CRITICAL** — highest severity count
-- **HIGH** — elevated severity count
-- **Authority Confirmed** — tweets verified against official sources
-- **Avg Sentiment** — average VADER compound score
-
-### 📈 Emotion Velocity Chart
-Line chart of VADER compound scores bucketed by minute over the last 60 minutes. A rapid drop toward -1 indicates an emerging crisis.
-
-### 🎯 Severity Distribution
-Bar chart showing the breakdown of tweets across `CRITICAL / HIGH / MEDIUM / LOW / NEUTRAL`.
-
-### 📋 Live Tweet Feed
-Color-coded card feed ordered by recency. Each card shows:
-- Severity badge and authority confirmation flag
-- Tweet content
-- Username, timestamp, location, VADER score, LLM confidence score
-
-### 🔧 Sidebar Controls
-| Control | Description |
-|---|---|
-| 💉 Inject Mock Data | Seeds 14 realistic crisis tweets across all severity levels |
-| 🐦 Scrape Twitter | Live scrape using snscrape (no API key required) |
-| 🧪 Analyze Tweet | Paste any text and see instant VADER + LLM analysis |
-| Severity Filter | Multi-select to show only relevant severity levels |
-| Auto-refresh | Polls every 30 seconds for a live dashboard feel |
+- **KPI Metrics**: Total Signals, Active Incidents, Critical Alerts, Verified Signals.
+- **Emotion Velocity Chart**: Real-time visualization of sentiment trends.
+- **Incident Explorer**: Drill down into specific events to see timelines, news links, and maps.
+- **Smart Search**: Filter by location, keyword, time, or severity.
 
 ---
 
+<<<<<<< HEAD
 ## 🔌 REST API
 
 ZeroHour includes a FastAPI REST API for programmatic access to all database operations.
@@ -197,60 +195,59 @@ curl "http://localhost:8000/api/stats"
 ---
 
 ## 🔬 Analysis Pipeline
+=======
+## 🚀 Roadmap: Best 8 Features (Priority)
+>>>>>>> b7bb72278f226c219e4c599dfcd129d31a764c4e
 
-```
-Tweet text
-    │
-    ├─── VADER (instant, always runs)
-    │       └── compound score [-1 to +1]
-    │
-    ├─── Keyword Matcher (regex, instant fallback)
-    │       └── CRITICAL / HIGH / MEDIUM based on crisis vocab
-    │
-    └─── Ollama / phi3:mini (async, 3-10s)
-            └── JSON: { label, score, reasoning }
-                  │
-                  └── Falls back to VADER if Ollama is offline
-```
-
-**Severity Labels:** `CRITICAL → HIGH → MEDIUM → LOW → NEUTRAL`
+These are currently being implemented to make ZeroHour a world-class platform:
+1.  **Live Crisis Map**: Interactive geospatial visualization of events.
+2.  **Incident Clustering**: Automatic grouping of related signals.
+3.  **Alert System**: Real-time notifications via Email/Telegram/Slack.
+4.  **NER Location Extraction**: Pinpointing exact locations from tweet text.
+5.  **Topic Classification**: Identifying specific disaster types (Flood, Explosion, etc.).
+6.  **Event Timeline**: Tracking the evolution of a crisis over time.
+7.  **Misinformation Detection**: Ranking signals by credibility.
+8.  **Multi-Source Ingestion**: Adding Reddit, Telegram, and RSS feeds.
 
 ---
 
-## 🔍 Authority Verification
+## 🗄️ Tech Stack
 
-The `authority.py` module:
-1. Builds a targeted Google query: `<keywords> site:police.gov OR site:reuters.com OR site:apnews.com`
-2. Checks if any result URL is from a known authoritative domain.
-3. Fetches the page with BeautifulSoup and confirms keyword presence.
-4. Marks the tweet with `authority=1` in the database.
-
-> Runs asynchronously — won't block the ingestion pipeline.
-
----
-
-## 🗄️ Database Schema
-
-### `tweets`
-| Column | Type | Description |
-|---|---|---|
-| `tweet_id` | TEXT UNIQUE | Original tweet ID or UUID for mocks |
-| `content` | TEXT | Raw tweet text |
-| `created_at` | TEXT | ISO 8601 timestamp |
-| `raw_vader` | REAL | VADER compound score |
-| `llm_label` | TEXT | Severity: CRITICAL/HIGH/MEDIUM/LOW/NEUTRAL |
-| `llm_score` | REAL | LLM confidence 0–1 |
-| `authority` | INTEGER | 1 if authority-confirmed |
-| `location` | TEXT | Geo-tag if available |
-
-### `incidents`
-Aggregated incident records linked to tweet IDs.
-
-### `analysis_log`
-Audit trail of every analysis stage with latency tracking.
+| Layer | Technology |
+| --- | --- |
+| **Backend API** | FastAPI |
+| **Dashboard** | Streamlit |
+| **AI Models** | Phi-3-mini (LLM), VADER (Sentiment) |
+| **NLP** | spaCy, BERTopic |
+| **Database** | SQLite (PostgreSQL for production) |
+| **Scraping** | snscrape, BeautifulSoup |
+| **Geo** | Mapbox, Folium |
 
 ---
 
+## 📦 Installation & Setup
+
+1. **Clone & Install**:
+   ```bash
+   git clone https://github.com/yourname/zerohour.git
+   cd zerohour
+   pip install -r requirements.txt
+   ```
+2. **Setup Ollama** (Optional but recommended):
+   - Install from [ollama.com](https://ollama.com)
+   - Run `ollama pull phi3:mini`
+3. **Launch**:
+   ```bash
+   # Start API
+   uvicorn backend.main:app --reload
+   
+   # Start Dashboard
+   streamlit run frontend/dashboard.py
+   ```
+
+---
+
+<<<<<<< HEAD
 ## 🚀 Tips
 
 - **No Ollama?** The dashboard fully works with VADER-only mode. All labels still appear.
@@ -261,3 +258,7 @@ Audit trail of every analysis stage with latency tracking.
 - **Auth layer**: Add `st.secrets` for API keys and wrap the dashboard with `streamlit-authenticator`.
 
 ---
+=======
+## 📜 License
+MIT License. Created by ZeroHour Team.
+>>>>>>> b7bb72278f226c219e4c599dfcd129d31a764c4e
