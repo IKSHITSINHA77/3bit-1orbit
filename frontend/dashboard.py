@@ -9,11 +9,18 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import time
 import pandas as pd
 import streamlit as st
-from datetime import datetime
+import requests
+import json
+from datetime import datetime, timedelta
+from PIL import Image
+import io
 
 from backend.database import init_db, fetch_tweets, fetch_stats, fetch_emotion_velocity
 from backend.ingest import seed_mock_data, scrape_twitter
 from backend.sentiment import analyze
+
+# API Configuration
+API_BASE_URL = "http://localhost:8000"
 
 # ── Page Config ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -74,7 +81,7 @@ init_db()
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("## 🚨 ZeroHour")
-    st.caption("Real-Time Crisis Intelligence")
+    st.caption("AI-Powered Crisis Intelligence")
     st.divider()
 
     st.markdown("### ⚙️ Controls")
@@ -107,7 +114,82 @@ with st.sidebar:
         st.caption(result.get("reasoning", ""))
 
     st.divider()
-    st.markdown("### 🔎 Filters")
+    st.markdown("### 🌐 API Integration")
+    api_status = st.checkbox("Use API Backend", value=False)
+    if api_status:
+        try:
+            response = requests.get(f"{API_BASE_URL}/health", timeout=2)
+            st.success("✅ API Connected")
+        except:
+            st.error("❌ API Offline")
+            api_status = False
+
+    st.divider()
+    st.markdown("### �️ Image Analysis")
+    uploaded_file = st.file_uploader(
+        "Upload an image for text analysis",
+        type=['jpg', 'jpeg', 'png', 'bmp', 'tiff', 'webp'],
+        help="Upload an image containing text for crisis intelligence analysis"
+    )
+    
+    if uploaded_file is not None:
+        # Display uploaded image
+        image = Image.open(uploaded_file)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+        
+        if st.button("🔍 Analyze Image", use_container_width=True, type="primary"):
+            with st.spinner("Analyzing image..."):
+                try:
+                    # Send image to API for analysis
+                    files = {"file": uploaded_file.getvalue()}
+                    response = requests.post(f"{API_BASE_URL}/api/image/analyze", files=files, timeout=30)
+                    
+                    if response.status_code == 200:
+                        result = response.json()
+                        
+                        if result['success']:
+                            st.success("✅ Image analyzed successfully!")
+                            
+                            # Display extracted text
+                            if result.get('text'):
+                                st.markdown("### 📝 Extracted Text")
+                                st.text_area("Extracted Content", result['text'], height=100, disabled=True)
+                                
+                                # Display analysis results
+                                col1, col2, col3 = st.columns(3)
+                                col1.metric("🎯 Confidence", f"{result.get('confidence', 0):.1f}%")
+                                col2.metric("📊 Word Count", result.get('word_count', 0))
+                                col3.metric("⏱️ Processing Time", f"{result.get('processing_time', 0):.2f}s")
+                                
+                                # Crisis detection
+                                if result.get('crisis_detected'):
+                                    severity = result.get('severity', 'NEUTRAL')
+                                    st.markdown(f"### 🚨 Crisis Detected!")
+                                    st.markdown(f"**Severity:** <span class='badge-{severity}'>{severity}</span>", unsafe_allow_html=True)
+                                    
+                                    # Display sentiment analysis
+                                    sentiment = result.get('sentiment_analysis', {})
+                                    if sentiment:
+                                        st.markdown("### 🧠 Sentiment Analysis")
+                                        col1, col2 = st.columns(2)
+                                        col1.metric("😡 VADER Score", f"{sentiment.get('raw_vader', 0):.3f}")
+                                        col2.metric("🎯 LLM Score", f"{sentiment.get('llm_score', 0):.3f}")
+                                        if sentiment.get('reasoning'):
+                                            st.caption(f"**Reasoning:** {sentiment['reasoning']}")
+                                else:
+                                    st.info("ℹ️ No crisis indicators detected in the image text.")
+                            else:
+                                st.warning("⚠️ No text could be extracted from the image.")
+                        else:
+                            st.error(f"❌ Analysis failed: {result.get('error', 'Unknown error')}")
+                    else:
+                        st.error(f"❌ API Error: {response.status_code} - {response.text}")
+                        
+                except Exception as e:
+                    st.error(f"❌ Error analyzing image: {str(e)}")
+    
+    st.divider()
+    st.markdown("### �🔎 Filters")
     severity_filter = st.multiselect(
         "Severity",
         ["CRITICAL", "HIGH", "MEDIUM", "LOW", "NEUTRAL"],
@@ -125,15 +207,41 @@ if auto_refresh:
 st.markdown(
     "<h1 style='margin-bottom:0'>🚨 ZeroHour</h1>"
     "<p style='color:#6b7280;font-size:0.9rem;margin-top:4px'>"
-    f"Crisis Intelligence Dashboard &nbsp;·&nbsp; Last refresh: {datetime.now().strftime('%H:%M:%S')}"
+    f"AI-Powered Crisis Intelligence Dashboard &nbsp;·&nbsp; Last refresh: {datetime.now().strftime('%H:%M:%S')}"
     "</p>",
     unsafe_allow_html=True,
 )
 st.divider()
 
+# ── API Data Fetching ────────────────────────────────────────────────────────────
+def fetch_api_data():
+    """Fetch data from REST API instead of direct database access"""
+    try:
+        # Get stats
+        stats_response = requests.get(f"{API_BASE_URL}/api/stats", timeout=5)
+        stats = stats_response.json() if stats_response.status_code == 200 else {}
+        
+        # Get tweets
+        tweets_response = requests.get(f"{API_BASE_URL}/api/tweets?limit={show_limit}", timeout=5)
+        all_tweets = tweets_response.json() if tweets_response.status_code == 200 else []
+        
+        # Get emotion velocity
+        vel_response = requests.get(f"{API_BASE_URL}/api/emotion-velocity?window_minutes=60", timeout=5)
+        vel = vel_response.json() if vel_response.status_code == 200 else []
+        
+        return stats, all_tweets, vel
+    except Exception as e:
+        st.error(f"API Error: {str(e)}")
+        return {}, [], []
+
 # ── Fetch data ────────────────────────────────────────────────────────────────
-stats = fetch_stats()
-all_tweets = fetch_tweets(limit=show_limit)
+if api_status:
+    stats, all_tweets, vel = fetch_api_data()
+else:
+    stats = fetch_stats()
+    all_tweets = fetch_tweets(limit=show_limit)
+    vel = fetch_emotion_velocity(60)
+
 df = pd.DataFrame(all_tweets)
 
 if not df.empty and severity_filter:
@@ -141,11 +249,11 @@ if not df.empty and severity_filter:
 
 # ── KPI Row ───────────────────────────────────────────────────────────────────
 c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("📡 Total Signals", stats["total"])
-c2.metric("🔴 CRITICAL", stats["critical"])
-c3.metric("🟠 HIGH", stats["high"])
-c4.metric("✅ Authority Confirmed", stats["authority_confirmed"])
-c5.metric("😡 Avg Sentiment", stats["avg_sentiment"])
+c1.metric("📡 Total Signals", stats.get("total", 0))
+c2.metric("🔴 CRITICAL", stats.get("critical", 0))
+c3.metric("🟠 HIGH", stats.get("high", 0))
+c4.metric("✅ Authority Confirmed", stats.get("authority_confirmed", 0))
+c5.metric("😡 Avg Sentiment", stats.get("avg_sentiment", 0))
 
 st.divider()
 
@@ -154,7 +262,6 @@ col_chart1, col_chart2 = st.columns([1.6, 1])
 
 with col_chart1:
     st.markdown("#### 📈 Emotion Velocity (last 60 min)")
-    vel = fetch_emotion_velocity(60)
     if vel:
         vel_df = pd.DataFrame(vel).rename(columns={"minute": "Time", "avg_vader": "Avg VADER", "count": "Volume"})
         vel_df = vel_df.set_index("Time")
@@ -206,4 +313,4 @@ else:
 
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.divider()
-st.caption("ZeroHour · Built for hackathon · Phi-3-mini + VADER + SQLite + Streamlit")
+st.caption("ZeroHour · AI-Powered Crisis Intelligence · Phi-3-mini + VADER + FastAPI + Streamlit")

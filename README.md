@@ -62,6 +62,15 @@ ZeroHour uses a multi-model approach for deep intelligence:
 - **Escalation Model**: Predicts the probability of an incident escalating based on tweet velocity, sentiment drop, and keyword intensity.
 - **Emotion Surge Detection**: Automatically alerts responders when sudden negative emotional spikes are detected.
 
+### 🖼️ Image Recognition & OCR (NEW)
+Advanced image processing capabilities for extracting text from visual content:
+- **Multi-language OCR**: Supports English, Hindi, Spanish, French, German text recognition
+- **Intelligent Preprocessing**: Automatic image enhancement for optimal OCR accuracy
+- **Crisis Detection**: Identifies emergency indicators in extracted text
+- **Sentiment Analysis**: Applies AI analysis to image-extracted content
+- **Real-time Processing**: Fast text extraction with confidence scoring
+- **Format Support**: JPG, PNG, BMP, TIFF, WebP image formats
+
 ### 4. (Optional) Start the REST API server
 
 ```bash
@@ -95,6 +104,7 @@ ZeroHour includes a robust backend for programmatic access.
   - `GET /api/incidents` - Get clustered incidents.
   - `GET /api/stats` - Fetch real-time dashboard KPIs.
   - `POST /api/alerts` - Configure and trigger custom alerts.
+  - `POST /api/image/analyze` - Upload and analyze images with OCR.
 >>>>>>> b7bb72278f226c219e4c599dfcd129d31a764c4e
 
 ---
@@ -105,6 +115,7 @@ ZeroHour includes a robust backend for programmatic access.
 - **Emotion Velocity Chart**: Real-time visualization of sentiment trends.
 - **Incident Explorer**: Drill down into specific events to see timelines, news links, and maps.
 - **Smart Search**: Filter by location, keyword, time, or severity.
+- **Image Analysis**: Upload images for OCR text extraction and crisis detection.
 
 ---
 
@@ -215,6 +226,7 @@ These are currently being implemented to make ZeroHour a world-class platform:
 | **Dashboard** | Streamlit |
 | **AI Models** | Phi-3-mini (LLM), VADER (Sentiment) |
 | **NLP** | spaCy, BERTopic |
+| **OCR** | Tesseract, OpenCV, Pillow |
 | **Database** | SQLite (PostgreSQL for production) |
 | **Scraping** | snscrape, BeautifulSoup |
 | **Geo** | Mapbox, Folium |
@@ -232,13 +244,19 @@ These are currently being implemented to make ZeroHour a world-class platform:
 2. **Setup Ollama** (Optional but recommended):
    - Install from [ollama.com](https://ollama.com)
    - Run `ollama pull phi3:mini`
-3. **Launch**:
+
+3. **Setup Tesseract OCR** (Required for image analysis):
+   - **Windows**: Download from [UB Mannheim](https://github.com/UB-Mannheim/tesseract/wiki)
+   - **macOS**: `brew install tesseract`
+   - **Linux**: `sudo apt-get install tesseract-ocr`
+   - **Language Packs**: Install additional language packs as needed
+4. **Launch**:
    ```bash
    # Start API
-   uvicorn backend.main:app --reload
+   uvicorn backend.api:app --reload --host 0.0.0.0 --port 8000
    
    # Start Dashboard
-   streamlit run frontend/dashboard.py
+   streamlit run frontend/dashboard.py --server.headless true
    ```
 
 ---
@@ -248,13 +266,39 @@ These are currently being implemented to make ZeroHour a world-class platform:
 
 - **No Ollama?** The dashboard fully works with VADER-only mode. All labels still appear.
 - **Demo mode**: Click "Inject Mock Data" for instant realistic data across all severity levels.
+- **Image Analysis**: Upload screenshots, photos, or documents containing text for crisis detection.
+- **OCR Languages**: The system supports English, Hindi, Spanish, French, and German text recognition.
 - **REST API**: Use the FastAPI backend for programmatic access to all database operations. See the API section above.
 - **Extend it**: The API already includes webhook-ready endpoints. Add authentication with `fastapi.security`.
 - **Scale it**: Swap SQLite for PostgreSQL by changing the connection string in `database.py`.
 - **Auth layer**: Add `st.secrets` for API keys and wrap the dashboard with `streamlit-authenticator`.
 
+## 🖼️ Image Analysis Examples
+
+**Use Cases:**
+- **Emergency Screenshots**: Analyze emergency alert screenshots for text extraction
+- **Document Scanning**: Process scanned documents for crisis-related content
+- **Social Media Images**: Extract text from social media posts and memes
+- **News Headlines**: Analyze news screenshots for breaking crisis information
+- **Signage Detection**: Read emergency signs and warning messages
+
+**Supported Formats:**
+- JPG, JPEG, PNG, BMP, TIFF, WebP
+- Minimum size: 50x50 pixels
+- Maximum size: 5000x5000 pixels
+- File size limit: 10MB
+
 ---
 =======
 ## 📜 License
 MIT License. Created by ZeroHour Team.
->>>>>>> b7bb72278f226c219e4c599dfcd129d31a764c4e
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+**ZeroHour — AI-Powered Crisis Intelligence System**

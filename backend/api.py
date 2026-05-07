@@ -8,13 +8,15 @@ Provides RESTful endpoints for:
 - Statistics and analytics
 """
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 import sqlite3
 import os
+import io
 
 from backend.database import (
     get_connection,
@@ -24,6 +26,7 @@ from backend.database import (
     fetch_stats,
     fetch_emotion_velocity,
 )
+from backend.image_processor import process_uploaded_image
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -143,6 +146,19 @@ class EmotionVelocityResponse(BaseModel):
     count: int
 
 
+class ImageAnalysisResponse(BaseModel):
+    success: bool
+    filename: Optional[str] = None
+    error: Optional[str] = None
+    text: Optional[str] = None
+    confidence: Optional[float] = None
+    word_count: Optional[int] = None
+    processing_time: Optional[float] = None
+    crisis_detected: Optional[bool] = None
+    severity: Optional[str] = None
+    sentiment_analysis: Optional[dict] = None
+
+
 # ── Health Check ─────────────────────────────────────────────────────────────
 
 @app.get("/")
@@ -158,6 +174,7 @@ async def root():
             "analysis_log": "/api/analysis-log",
             "stats": "/api/stats",
             "emotion_velocity": "/api/emotion-velocity",
+            "image_analysis": "/api/image/analyze",
         }
     }
 
@@ -530,6 +547,85 @@ async def get_database_info():
             }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ── Image Processing Endpoints ─────────────────────────────────────────────────────
+
+@app.post("/api/image/analyze", response_model=ImageAnalysisResponse)
+async def analyze_image(file: UploadFile = File(...)):
+    """
+    Upload and analyze an image for text extraction and crisis detection.
+    
+    Args:
+        file: Image file to analyze
+        
+    Returns:
+        Analysis results including extracted text and crisis intelligence
+    """
+    try:
+        # Validate file type
+        if not file.content_type.startswith('image/'):
+            raise HTTPException(status_code=400, detail="File must be an image")
+        
+        # Read file content
+        image_data = await file.read()
+        
+        # Process image
+        result = process_uploaded_image(image_data, file.filename)
+        
+        if not result['success']:
+            return ImageAnalysisResponse(
+                success=False,
+                filename=file.filename,
+                error=result.get('error', 'Unknown error')
+            )
+        
+        analysis = result['analysis']
+        
+        # If crisis detected, create a tweet entry
+        if analysis.get('crisis_detected') and analysis.get('text'):
+            tweet_data = {
+                "tweet_id": f"img_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
+                "username": "@image_analysis",
+                "content": f"[IMAGE] {analysis['text'][:200]}...",
+                "created_at": datetime.utcnow().isoformat(),
+                "source": "image_ocr",
+                "location": None,
+                "keywords": "image_analysis,ocr",
+                "raw_vader": analysis.get('sentiment_analysis', {}).get('raw_vader', 0),
+                "llm_label": analysis.get('severity', 'NEUTRAL'),
+                "llm_score": analysis.get('sentiment_analysis', {}).get('llm_score', 0),
+                "authority": 0,
+            }
+            insert_tweet(tweet_data)
+        
+        return ImageAnalysisResponse(
+            success=True,
+            filename=result['filename'],
+            text=analysis.get('text'),
+            confidence=analysis.get('confidence'),
+            word_count=analysis.get('word_count'),
+            processing_time=analysis.get('processing_time'),
+            crisis_detected=analysis.get('crisis_detected'),
+            severity=analysis.get('severity'),
+            sentiment_analysis=analysis.get('sentiment_analysis')
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/image/supported-formats")
+async def get_supported_formats():
+    """Get list of supported image formats."""
+    return {
+        "supported_formats": [".jpg", ".jpeg", ".png", ".bmp", ".tiff", ".webp"],
+        "max_size_mb": 10,
+        "min_dimensions": {"width": 50, "height": 50},
+        "max_dimensions": {"width": 5000, "height": 5000}
+    }
 
 
 if __name__ == "__main__":
