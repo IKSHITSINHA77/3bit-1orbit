@@ -4,7 +4,8 @@ ZeroHour is a real-time crisis intelligence platform that detects and analyzes e
 
 The system ingests social data, classifies severity using LLM + NLP models, verifies information with authoritative sources, clusters signals into incidents, and visualizes everything on a live intelligence dashboard.
 
-<<<<<<< HEAD
+## 📁 Project Structure
+
 ```
 zerohour/
 ├── backend/
@@ -20,11 +21,6 @@ zerohour/
 ├── requirements.txt
 └── README.md
 ```
-=======
-🌍 **Why ZeroHour?**
-During emergencies, social media signals appear before official reports. ZeroHour transforms noisy social signals into:
-- **Early crisis detection**
-- **Real-Time monitoring**
 - **Incident intelligence**
 - **Crisis escalation prediction**
 >>>>>>> b7bb72278f226c219e4c599dfcd129d31a764c4e
