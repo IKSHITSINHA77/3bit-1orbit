@@ -169,5 +169,3 @@ Audit trail of every analysis stage with latency tracking.
 - **Auth layer**: Add `st.secrets` for API keys and wrap the dashboard with `streamlit-authenticator`.
 
 ---
-
-
